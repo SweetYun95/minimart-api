@@ -22,6 +22,21 @@ JWT 인증, 주문 처리, Swagger 문서화, 실시간 소켓 통신 등의 기
 - `app.js` — 서버 진입점
 
 ---
+## 📂 기본 폴더 및 파일 구조
+
+shopmax-api/
+- ├── config/ # DB 설정 및 환경 설정 파일
+- ├── models/ # Sequelize ORM 모델 정의 (User, Item, Order 등)
+- ├── passport/ # JWT 인증 전략 및 미들웨어
+- ├── routes/ # REST API 라우터 (auth, order, token 등)
+- ├── routes_swagger/ # Swagger 문서용 라우터 정의
+- ├── utils/ # 공통 유틸 함수 (토큰 생성, 포맷터 등)
+- ├── swagger.js # Swagger UI 및 설정
+- ├── socket.js # 소켓 통신 서버 로직
+- ├── app.js # Express 서버 메인 진입점
+- └── .env # 환경변수 파일
+
+---
 
 ## 👥 브랜치 전략
 
