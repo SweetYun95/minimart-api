@@ -14,8 +14,7 @@ JWT 인증, 주문 처리, Swagger 문서화, 실시간 소켓 통신 등의 기
 - `/passport` — Passport를 활용한 JWT 인증 설정
 - `/routes` — API 라우터 정의
   - `auth.js`, `order.js`, `token.js` 등
-<!-- - `/routes_swagger` — Swagger 명세 주석 포함된 라우터 -->
-- `/middlewares` — 토큰 검증, 에러 처리 등 공통 미들웨어
+- `/routes_swagger` — Swagger 명세 주석 포함된 라우터
 - `/swagger.js` — Swagger UI 연결 및 설정
 - `/socket.js` — 실시간 소켓 통신 (WebSocket / Socket.io)
 - `/utils` — 유틸리티 함수 모음 (토큰 생성, 날짜 포맷 등)
