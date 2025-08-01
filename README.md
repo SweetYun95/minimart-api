@@ -1,60 +1,74 @@
 # 🛒 ShopMax Backend
 
-이 프로젝트는 Node.js + Express 기반 이커머스 백엔드입니다.  
-JWT 인증, 주문 처리, Swagger 문서화를 포함합니다.
+이 프로젝트는 Node.js + Express 기반의 이커머스 백엔드입니다.  
+JWT 인증, 주문 처리, Swagger 문서화, 실시간 소켓 통신 등의 기능을 포함합니다.  
+각 팀원이 담당 브랜치에서 기능을 개발하고, 완성 후 `develop` 브랜치로 병합합니다.
 
 ---
 
 ## 📁 레포 구조
 
-- `/config` — DB 및 서버 설정 파일 (예: `config.json`, 환경별 설정)
-- `/models` — Sequelize 또는 Mongoose 등 ORM 모델 정의
-  - `user.js`: 사용자 모델
-  - `item.js`: 상품 모델
-  - `order.js`: 주문 모델
-- `/passport` — Passport를 활용한 인증 설정 (`passport.js`, 전략 파일 등)
+- `/config` — DB 및 서버 설정 (`config.json`, 환경별 설정 등)
+- `/models` — ORM 모델 정의
+  - `user.js`, `item.js`, `order.js` 등
+- `/passport` — Passport를 활용한 JWT 인증 설정
 - `/routes` — API 라우터 정의
-  - `user.js`, `auth.js`, `order.js` 등
-  - `/middlewares` — 커스텀 미들웨어 (토큰 검증, 에러 처리 등)
-  <!-- /routes_swagger 폴더를 /routes 와 구분할 지는 후추 결정예정 -->
-<!-- - `/routes_swagger` — Swagger 문서화를 위한 주석 기반 라우터 모듈  -->
-- `/swagger.js` — Swagger UI 연결 및 세팅 파일
-- `/utils` — 공통 유틸 함수 (예: 토큰 생성, 날짜 포맷 등)
-- `/socket.js` — 실시간 기능 (WebSocket 또는 Socket.io) 처리
-- `.env` — 환경 변수 파일 (DB 정보, JWT 시크릿 등)
+  - `auth.js`, `order.js`, `token.js` 등
+- `/routes_swagger` — Swagger 명세 주석 포함된 라우터
+- `/swagger.js` — Swagger UI 연결 및 설정
+- `/socket.js` — 실시간 소켓 통신 (WebSocket / Socket.io)
+- `/utils` — 유틸리티 함수 모음 (토큰 생성, 날짜 포맷 등)
+- `.env` — 환경 변수 파일
 - `app.js` — 서버 진입점
 
+---
+## 📂 기본 폴더 및 파일 구조
+
+shopmax-api/
+- ├── config/ # DB 설정 및 환경 설정 파일
+- ├── models/ # Sequelize ORM 모델 정의 (User, Item, Order 등)
+- ├── passport/ # JWT 인증 전략 및 미들웨어
+- ├── routes/ # REST API 라우터 (auth, order, token 등)
+- ├── routes_swagger/ # Swagger 문서용 라우터 정의
+- ├── utils/ # 공통 유틸 함수 (토큰 생성, 포맷터 등)
+- ├── swagger.js # Swagger UI 및 설정
+- ├── socket.js # 소켓 통신 서버 로직
+- ├── app.js # Express 서버 메인 진입점
+- └── .env # 환경변수 파일
 
 ---
 
 ## 👥 브랜치 전략
 
-- `main`: 운영용
-- `hcm`, `jsy`, `jse`, `ysy`: 각자 작업 브랜치
-- hcm : 한창민
-- jsy : 정세연
-- jse : 정송이
-- ysy : 윤승영
+- `main`: 최종 배포 브랜치
+- `develop`: 통합 개발 브랜치
+- `hcm` : 한창민
+- `jsy` : 정세연
+- `jse` : 정송이
+- `ysy` : 윤승영
 
-### ✅ 브랜치 생성 및 push 방법
+> 모든 기능 개발은 **개별 브랜치에서 수행 후**,  
+> 반드시 `develop` 브랜치 기준으로 **PR(Pull Request)** 을 생성해주세요.
+
+---
+
+## 🔀 브랜치 작업 및 Push 방법
+
+### 1. 브랜치 최초 이동
 
 ```bash
-# 브랜치 최초 이동
 git checkout -t origin/브랜치이름
 
-# 예: 본인 이름으로 브랜치 이동
-git checkout -t origin/hcm
+# 예:
 git checkout -t origin/jsy
-git checkout -t origin/jse
-git checkout -t origin/ysy
 
-# 최초 이동후 이동은
-git checkout 브랜치 이름
+# 이후 작업할 때는
 
-# 최초 1회만 push 설정
+git checkout 브랜치이름
+# 최초 Push 연결
 git push --set-upstream origin 브랜치이름
-git push
 
+#이후에는 git push만 입력하면 됩니다.
 ```
 ---
 
@@ -71,7 +85,6 @@ git commit -m "[태그] 작업한 내용 요약"
 git commit -m "[feat] 로그인 API 구현"
 git commit -m "[fix] 장바구니 오류 수정"
 git commit -m "[style] 버튼 정렬 개선"
-
 
 ---
 
