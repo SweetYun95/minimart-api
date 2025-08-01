@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize')
 
-module.exports = class review extends Sequelize.Model {
+module.exports = class Review extends Sequelize.Model {
    static init(sequelize) {
       return super.init(
          {
@@ -29,5 +29,7 @@ module.exports = class review extends Sequelize.Model {
          }
       )
    }
-   static associate(db) {}
+   static associate(db) {
+      Review.hasMany(db.Img, { foreignKey: 'reviewId', sourceKey: 'id', onDelete: 'CASCADE' })
+   }
 }

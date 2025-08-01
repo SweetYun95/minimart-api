@@ -25,5 +25,7 @@ module.exports = class Domain extends Sequelize.Model {
          }
       )
    }
-   static associate(db) {}
+   static associate(db) {
+      Domain.belongsTo(db.User, { foreignKey: 'userId', targetKey: 'id', onDelete:'CASCADE'})
+   }
 }
