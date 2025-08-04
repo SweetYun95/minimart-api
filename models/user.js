@@ -19,7 +19,7 @@ module.exports = class User extends Sequelize.Model {
             },
             address: {
                type: Sequelize.STRING(255),
-               allowNull: true,
+               allowNull: false,
             },
             gender: {
                type: Sequelize.CHAR(1),
@@ -53,5 +53,7 @@ module.exports = class User extends Sequelize.Model {
       User.hasMany(db.Order, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'CASCADE' })
       User.hasOne(db.Cart, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'CASCADE' })
       User.hasMany(db.Review, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'CASCADE' })
+      User.hasMany(db.Pet, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'CASCADE' })
    }
 }
+
