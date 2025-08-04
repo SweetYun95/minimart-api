@@ -56,3 +56,4 @@ module.exports = class User extends Sequelize.Model {
       User.hasMany(db.Pet, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'CASCADE' })
    }
 }
+
