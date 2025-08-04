@@ -1,11 +1,11 @@
 const Sequelize = require('sequelize')
 
-module.exports = class Img extends Sequelize.Model {
+module.exports = class ItemImage extends Sequelize.Model {
    static init(sequelize) {
       return super.init(
          {
             oriImgName: {
-               type: Sequelize.STRING(255),
+               type: Sequelize.STRING(150),
                allowNull: false,
             },
             imgUrl: {
@@ -22,8 +22,8 @@ module.exports = class Img extends Sequelize.Model {
             sequelize,
             timestamps: true,
             underscored: false,
-            modelName: 'Image',
-            tableName: 'images',
+            modelName: 'ItemImage',
+            tableName: 'itemImages',
             paranoid: false,
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
@@ -31,12 +31,12 @@ module.exports = class Img extends Sequelize.Model {
       )
    }
    static associate(db) {
-      Img.belongsTo(db.Item, {
+      ItemImages.belongsTo(db.Item, {
          foreignKey: 'itemId',
          targetKey: 'id',
          onDelete: 'CASCADE',
       })
-      Img.belongsTo(db.Review, {
+      ItemImages.belongsTo(db.Review, {
          foreignKey: 'reviewId',
          targetKey: 'id',
          onDelete: 'CASCADE',
