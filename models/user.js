@@ -19,7 +19,7 @@ module.exports = class User extends Sequelize.Model {
             },
             address: {
                type: Sequelize.STRING(255),
-               allowNull: true,
+               allowNull: false,
             },
             gender: {
                type: Sequelize.CHAR(1),
