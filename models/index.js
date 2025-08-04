@@ -10,7 +10,10 @@ const Category = require('./category')
 const ItemCategory = require('./itemCategory')
 const Order = require('./order')
 const OrderItem = require('./orderItem')
-const Image = require('./image')
+const ItemImage = require('./itemImage')
+const Review = require('./review')
+const ReviewImage = require('./reviewImage')
+const Pet = require('./pet')
 
 const db = {}
 const sequelize = new Sequelize(config.database, config.username, config.password, config)
@@ -25,7 +28,10 @@ db.Category = Category
 db.ItemCategory = ItemCategory
 db.Order = Order
 db.OrderItem = OrderItem
-db.Image = Image
+db.ItemImage = ItemImage
+db.Review = Review
+db.ReviewImage = ReviewImage
+db.Pet = Pet
 
 User.init(sequelize)
 Item.init(sequelize)
@@ -35,7 +41,10 @@ Category.init(sequelize)
 ItemCategory.init(sequelize)
 Order.init(sequelize)
 OrderItem.init(sequelize)
-Image.init(sequelize)
+ItemImage.init(sequelize)
+Review.init(sequelize)
+ReviewImage.init(sequelize)
+Pet.init(sequelize)
 
 User.associate(db)
 Item.associate(db)
@@ -45,6 +54,9 @@ Category.associate(db)
 ItemCategory.associate(db)
 Order.associate(db)
 OrderItem.associate(db)
-Image.associate(db)
+ItemImage.associate(db)
+Review.associate(db)
+ReviewImage.associate(db)
+Pet.associate(db)
 
 module.exports = db
