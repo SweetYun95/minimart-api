@@ -1,28 +1,29 @@
 const Sequelize = require('sequelize')
 
-module.exports = class Review extends Sequelize.Model {
+module.exports = class ReviewImage extends Sequelize.Model {
    static init(sequelize) {
       return super.init(
          {
-            reviewDate: {
-               type: Sequelize.DATE,
+            oriImgName: {
+               type: Sequelize.STRING(150),
                allowNull: false,
             },
-            reviewContent: {
-               type: Sequelize.TEXT,
+            imgUrl: {
+               type: Sequelize.STRING(255),
                allowNull: false,
             },
-            rating: {
-               type: Sequelize.INTEGER,
-               allowNull: false,
+            repImgYn: {
+               type: Sequelize.ENUM('Y', 'N'),
+               defaultValue: 'N',
+               allowNull: true,
             },
          },
          {
             sequelize,
             timestamps: true,
             underscored: false,
-            modelName: 'Review',
-            tableName: 'reviews',
+            modelName: 'ReviewImage',
+            tableName: 'reviewImages',
             paranoid: false,
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
@@ -30,10 +31,8 @@ module.exports = class Review extends Sequelize.Model {
       )
    }
    static associate(db) {
-      Review.hasMany(db.ReviewImage, { foreignKey: 'reviewId', sourceKey: 'id', onDelete: 'CASCADE' })
-
-      Review.belongsTo(db.Item, {
-         foreignKey: 'itemId',
+      ReviewImage.belongsTo(db.Review, {
+         foreignKey: 'reviewId',
          targetKey: 'id',
          onDelete: 'CASCADE',
       })

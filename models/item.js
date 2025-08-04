@@ -38,7 +38,7 @@ module.exports = class Item extends Sequelize.Model {
       )
    }
    static associate(db) {
-      Item.hasMany(db.Img, {
+      Item.hasMany(db.ItemImage, {
          foreignKey: 'itemId',
          sourceKey: 'id',
          onDelete: 'CASCADE',
@@ -50,6 +50,11 @@ module.exports = class Item extends Sequelize.Model {
          onDelete: 'CASCADE',
       })
       Item.hasMany(db.CartItem, {
+         foreignKey: 'itemId',
+         sourceKey: 'id',
+         onDelete: 'CASCADE',
+      })
+      Item.hasMany(db.Review, {
          foreignKey: 'itemId',
          sourceKey: 'id',
          onDelete: 'CASCADE',
