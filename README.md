@@ -15,12 +15,26 @@ JWT 인증, 주문 처리, Swagger 문서화, 실시간 소켓 통신 등의 기
 - `/routes` — API 라우터 정의
   - `auth.js`, `order.js`, `token.js` 등
 - `/routes_swagger` — Swagger 명세 주석 포함된 라우터
-- `/middlewares` — 토큰 검증, 에러 처리 등 공통 미들웨어
 - `/swagger.js` — Swagger UI 연결 및 설정
 - `/socket.js` — 실시간 소켓 통신 (WebSocket / Socket.io)
 - `/utils` — 유틸리티 함수 모음 (토큰 생성, 날짜 포맷 등)
 - `.env` — 환경 변수 파일
 - `app.js` — 서버 진입점
+
+---
+## 📂 기본 폴더 및 파일 구조
+
+shopmax-api/
+- ├── config/ # DB 설정 및 환경 설정 파일
+- ├── models/ # Sequelize ORM 모델 정의 (User, Item, Order 등)
+- ├── passport/ # JWT 인증 전략 및 미들웨어
+- ├── routes/ # REST API 라우터 (auth, order, token 등)
+- ├── routes_swagger/ # Swagger 문서용 라우터 정의
+- ├── utils/ # 공통 유틸 함수 (토큰 생성, 포맷터 등)
+- ├── swagger.js # Swagger UI 및 설정
+- ├── socket.js # 소켓 통신 서버 로직
+- ├── app.js # Express 서버 메인 진입점
+- └── .env # 환경변수 파일
 
 ---
 
@@ -44,11 +58,6 @@ JWT 인증, 주문 처리, Swagger 문서화, 실시간 소켓 통신 등의 기
 
 ### ✅ 브랜치 네이밍 규칙
 
-[이니셜]-[작업유형]-[기능이름]
-예시:
-- `jsy-feat-popup` → 정세연 님이 팝업 기능 개발
-- `hcm-fix-login-bug` → 한창민 님이 로그인 버그 수정
-- `jse-test-api-token` → 정송이 님이 토큰 API 테스트
 
 ### ✅ 브랜치 생성 명령어
 
@@ -101,7 +110,6 @@ git commit -m "[태그] 작업한 내용 요약"
 git commit -m "[feat] 로그인 API 구현"
 git commit -m "[fix] 장바구니 오류 수정"
 git commit -m "[style] 버튼 정렬 개선"
-
 
 ---
 
