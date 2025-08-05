@@ -99,4 +99,26 @@ router.get('/check', (req, res) => {
    }
 })
 
+// 아이디 중복 확인
+router.get('/check-id', async (req, res) => {
+   const { userId } = req.query
+
+   if (!userId) {
+      return res.status(400).json({ message: 'userId 파라미터가 필요합니다.' })
+   }
+
+   try {
+      const user = await User.findOne({ where: { userId } })
+      if (user) {
+         return res.status(409).json({ message: '이미 사용 중인 아이디입니다.' })
+      } else {
+         return res.status(200).json({ message: '사용 가능한 아이디입니다.' })
+      }
+   } catch (err) {
+      console.error('아이디 중복 확인 중 오류:', err)
+      return res.status(500).json({ message: '서버 오류', error: err })
+   }
+})
+
+
 module.exports = router
