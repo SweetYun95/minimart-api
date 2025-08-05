@@ -7,8 +7,8 @@ const passport = require('passport')
 require('dotenv').config()
 const cors = require('cors')
 // const { swaggerUi, swaggerSpec } = require('./swagger')
-const http = require('http')
-const socketIO = require('./socket')
+// const http = require('http')
+// const socketIO = require('./socket')
 
 // 라우터 및 기타 모듈 불러오기
 const indexRouter = require('./routes/index')
@@ -66,10 +66,10 @@ app.use('/', indexRouter)
 app.use('/auth', authRouter)
 
 // HTTP 서버 생성
-const server = http.createServer(app)
+// const server = http.createServer(app)
 
 // Socket.IO 초기화 및 서버와 연결, 세션을 사용하기 위해 sessionMiddleware 전송
-socketIO(server, sessionMiddleware)
+// socketIO(server, sessionMiddleware)
 
 // 잘못된 라우터 경로 처리
 app.use((req, res, next) => {
