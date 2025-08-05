@@ -7,8 +7,8 @@ const { isLoggedIn, isNotLoggedIn } = require('./middlewares')
 const router = express.Router()
 
 // 회원가입
-router.post('/signup', isNotLoggedIn, async (req, res) => {
-   const { email, password, name } = req.body
+router.post('/join', isNotLoggedIn, async (req, res) => {
+   const { email, password, name, userId, address, gender } = req.body
 
    try {
       const exUser = await User.findOne({ where: { email } })
@@ -17,12 +17,19 @@ router.post('/signup', isNotLoggedIn, async (req, res) => {
       }
 
       const hash = await bcrypt.hash(password, 12)
-      await User.create({ email, password: hash, name })
+      await User.create({
+         userId,
+         email,
+         password: hash,
+         name,
+         address,
+         gender, // 선택 사항이지만 받도록
+      })
 
       res.status(201).json({ message: '회원가입 성공' })
    } catch (error) {
-      console.error(error)
-      res.status(500).json({ message: '서버 오류' })
+      console.error('회원가입 중 에러:', error)
+      res.status(500).json({ message: '서버 오류', error })
    }
 })
 
@@ -47,6 +54,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
             message: '로그인 성공',
             user: {
                id: user.id,
+               userId: user.userId,
                email: user.email,
                name: user.name,
                role: user.role,
@@ -78,6 +86,7 @@ router.get('/check', (req, res) => {
          isAuthenticated: true,
          user: {
             id: req.user.id,
+            userId: req.user.userId,
             email: req.user.email,
             name: req.user.name,
             role: req.user.role,
