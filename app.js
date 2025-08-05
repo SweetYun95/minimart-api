@@ -13,6 +13,7 @@ const cors = require('cors')
 // 라우터 및 기타 모듈 불러오기
 const indexRouter = require('./routes/index')
 const authRouter = require('./routes/auth')
+const itemRouter = require('./routes/item')
 
 const { sequelize } = require('./models')
 const passportConfig = require('./passport')
@@ -25,7 +26,7 @@ app.set('port', process.env.PORT || 8002)
 sequelize
    .sync({ force: false })
    .then(() => {
-      console.log(' 🛠 데이터베이스 연결 성공') 
+      console.log(' 🛠 데이터베이스 연결 성공')
    })
    .catch((err) => {
       console.error(err) //연결 실패시 오류 출력
@@ -62,8 +63,9 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 // 라우터 등록
-app.use('/', indexRouter) 
+app.use('/', indexRouter)
 app.use('/auth', authRouter)
+app.use('/item', itemRouter)
 
 // HTTP 서버 생성
 // const server = http.createServer(app)
@@ -73,14 +75,14 @@ app.use('/auth', authRouter)
 
 // 잘못된 라우터 경로 처리
 app.use((req, res, next) => {
-   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`) 
-   error.status = 404 
-   next(error) 
+   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`)
+   error.status = 404
+   next(error)
 })
 
 // 에러 미들웨어(미들웨어 실행 중 발생하는 에러를 처리함)
 app.use((err, req, res, next) => {
-   const statusCode = err.status || 500 
+   const statusCode = err.status || 500
    const errorMessage = err.message || '서버 내부 오류'
 
    //개발 중 서버 콘솔에서 상세한 에러 확인 용도
