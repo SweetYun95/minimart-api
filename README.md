@@ -14,7 +14,7 @@ JWT 인증, 주문 처리, Swagger 문서화, 실시간 소켓 통신 등의 기
 - `/passport` — Passport를 활용한 JWT 인증 설정
 - `/routes` — API 라우터 정의
   - `auth.js`, `order.js`, `token.js` 등
-<!-- - `/routes_swagger` — Swagger 명세 주석 포함된 라우터 -->
+- `/routes_swagger` — Swagger 명세 주석 포함된 라우터
 - `/middlewares` — 토큰 검증, 에러 처리 등 공통 미들웨어
 - `/swagger.js` — Swagger UI 연결 및 설정
 - `/socket.js` — 실시간 소켓 통신 (WebSocket / Socket.io)
@@ -37,6 +37,36 @@ JWT 인증, 주문 처리, Swagger 문서화, 실시간 소켓 통신 등의 기
 > 반드시 `develop` 브랜치 기준으로 **PR(Pull Request)** 을 생성해주세요.
 
 ---
+
+## 🌿 신규 브랜치 생성 규칙
+
+기능이 세분화되거나 테스트/임시 작업이 필요한 경우, 아래 규칙에 따라 **개별 브랜치에서 파생 브랜치**를 생성할 수 있습니다.
+
+### ✅ 브랜치 네이밍 규칙
+
+[이니셜]-[작업유형]-[기능이름]
+예시:
+- `jsy-feat-popup` → 정세연 님이 팝업 기능 개발
+- `hcm-fix-login-bug` → 한창민 님이 로그인 버그 수정
+- `jse-test-api-token` → 정송이 님이 토큰 API 테스트
+
+### ✅ 브랜치 생성 명령어
+
+```bash
+git checkout -b 본인지명/작업유형-기능명
+git push -u origin 본인지명/작업유형-기능명
+예:
+git checkout -b jsy/feat-chat-ui
+git push -u origin jsy/feat-chat-ui
+```
+> ❗ 브랜치를 새로 생성할 때는 팀 리더와 간단히 공유 후 작업해주세요.
+> 작업 완료 후에는 develop 브랜치 기준으로 Pull Request를 생성합니다.
+
+✅ 브랜치 전략은 협업의 중심입니다.
+원활한 관리와 통합을 위해 가이드에 따라 작업해주세요 🙌
+
+---
+
 
 ## 🔀 브랜치 작업 및 Push 방법
 
