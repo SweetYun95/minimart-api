@@ -116,9 +116,6 @@ router.get('/refresh', isLoggedIn, async (req, res, next) => {
 // 토큰 유효성 확인용
 /* 
 프론트에서 발급/재발급 버튼 구현할 때 필요할 것 같아서 작성합니다. 필요없을 경우 이 부분 삭제
-임시 코드이므로 추후 기능 픽스하게 되면 tokenApi.js에 동작 추가 필요
-
-확정 전 사용 예시: useEffect 내에서 await shopmaxApi.get('/token/checkTokenStatus') 후 if문 사용해 핸들링
 */
 router.get('/checkTokenStatus', verifyToken, async (req, res, next) => {
    try {
