@@ -14,9 +14,8 @@ const cors = require('cors')
 const indexRouter = require('./routes/index')
 const authRouter = require('./routes/auth')
 const itemRouter = require('./routes/item')
-const tokenRouter = require('./routes/token')
 const orderRouter = require('./routes/order')
-
+const tokenRouter = require('./routes/token')
 
 const { sequelize } = require('./models')
 const passportConfig = require('./passport')
