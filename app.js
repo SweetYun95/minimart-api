@@ -14,7 +14,9 @@ const cors = require('cors')
 const indexRouter = require('./routes/index')
 const authRouter = require('./routes/auth')
 const itemRouter = require('./routes/item')
+const orderRouter = require('./routes/order')
 const tokenRouter = require('./routes/token')
+
 
 const { sequelize } = require('./models')
 const passportConfig = require('./passport')
@@ -67,6 +69,7 @@ app.use(passport.session())
 app.use('/', indexRouter)
 app.use('/auth', authRouter)
 app.use('/item', itemRouter)
+app.use('/order', orderRouter)
 app.use('/token', tokenRouter)
 
 // HTTP 서버 생성
