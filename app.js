@@ -16,7 +16,7 @@ const authRouter = require('./routes/auth')
 const itemRouter = require('./routes/item')
 const orderRouter = require('./routes/order')
 const tokenRouter = require('./routes/token')
-
+const reviewRouter = require('./routes/review')
 
 const { sequelize } = require('./models')
 const passportConfig = require('./passport')
@@ -71,6 +71,7 @@ app.use('/auth', authRouter)
 app.use('/item', itemRouter)
 app.use('/order', orderRouter)
 app.use('/token', tokenRouter)
+app.use('/review', reviewRouter)
 
 // HTTP 서버 생성
 // const server = http.createServer(app)

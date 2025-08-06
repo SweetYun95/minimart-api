@@ -1,5 +1,5 @@
 const express = require('express')
-const { Review, ReviewImage } = require('../models')
+const { sequelize, Review, ReviewImage } = require('../models')
 const { isLoggedIn } = require('./middlewares')
 const fs = require('fs')
 const path = require('path')
@@ -34,8 +34,8 @@ router.post('/', isLoggedIn, upload.array('img'), async (req, res, next) => {
    const t = await sequelize.transaction()
    try {
       const { itemId, reviewDate, reviewContent, rating } = req.body
-
-      const review = await Review.create({ itemId, reviewDate, reviewContent, rating }, { transaction: t })
+      const userId = req.user.id
+      const review = await Review.create({ itemId, userId, reviewDate, reviewContent, rating }, { transaction: t })
       let reviewImages = []
       if (req.files?.length > 0) {
          reviewImages = req.files.map((file) => ({
@@ -55,6 +55,7 @@ router.post('/', isLoggedIn, upload.array('img'), async (req, res, next) => {
       })
    } catch (error) {
       await t.rollback()
+      console.error('[리뷰 등록 에러]', error)
       next({
          status: 500,
          message: '후기 등록 중 오류가 발생했습니다.',
