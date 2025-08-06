@@ -2,13 +2,14 @@ const express = require('express')
 const router = express.Router()
 
 const jwt = require('jsonwebtoken')
-const Domain = require('../models')
+const { Domain } = require('../models')
 const { isLoggedIn, isAdmin, verifyToken } = require('./middlewares')
 
 // 토큰 발급
 router.get('/get', isLoggedIn, async (req, res, next) => {
    try {
-      const origin = req.get('origin')
+      // console.log('👩🏻[token.js] req.user:', req.user)
+      const origin = req.get('origin') || req.headers.host
       const token = jwt.sign(
          {
             id: req.user.id,
@@ -20,6 +21,9 @@ router.get('/get', isLoggedIn, async (req, res, next) => {
             issuer: 'shopmaxadmin',
          }
       )
+
+      // console.log('💾[token.js] /get token:', token)
+
       await Domain.create({
          userId: req.user.id,
          host: origin,
@@ -32,6 +36,7 @@ router.get('/get', isLoggedIn, async (req, res, next) => {
          token,
       })
    } catch (error) {
+      // console.error('🔥 [token.js] Domain.create 오류 원본:', error)
       error.status = 500
       error.message = '토큰 발급 중 오류가 발생했습니다.'
       return next(error)
@@ -66,7 +71,7 @@ router.get('/read', isAdmin, async (req, res, next) => {
    }
 })
 
-// 토큰이 만료됐을 경우 재발급
+//토큰 재발급
 router.get('/refresh', isLoggedIn, async (req, res, next) => {
    try {
       const origin = req.get('origin')
@@ -81,6 +86,7 @@ router.get('/refresh', isLoggedIn, async (req, res, next) => {
          {
             id: req.user.id,
             email: req.user.email,
+            nonce: Math.random().toString(36).substring(2), // // 토큰 중복 생성을 방지하기 위한 랜덤 문자열
          },
          process.env.JWT_SECRET,
          {
@@ -88,6 +94,9 @@ router.get('/refresh', isLoggedIn, async (req, res, next) => {
             issuer: 'shopmaxadmin',
          }
       )
+
+      console.log('✅ 기존 토큰:', domainData.clientToken)
+      console.log('✅ 새 토큰:', newToken)
 
       domainData.clientToken = newToken
       await domainData.save()
@@ -104,15 +113,21 @@ router.get('/refresh', isLoggedIn, async (req, res, next) => {
    }
 })
 
-/* 
-아래 코드는 프론트에서 발급/재발급 버튼 구현할 때 필요할 것 같아서 작성합니다. 필요없을 경우 이 부분 삭제
-사용 예시: useEffect 내에서 await shopmaxApi.get('/token/checkTokenStatus') 후 if문 사용해 핸들링
-*/
 // 토큰 유효성 확인용
+/* 
+프론트에서 발급/재발급 버튼 구현할 때 필요할 것 같아서 작성합니다. 필요없을 경우 이 부분 삭제
+*/
 router.get('/checkTokenStatus', verifyToken, async (req, res, next) => {
-   res.json({
-      success: true,
-      message: '유효한 토큰입니다.',
-   })
+   try {
+      res.json({
+         success: true,
+         message: '유효한 토큰입니다.',
+      })
+   } catch (error) {
+      error.status = 500
+      error.message = '토큰 유효성 검사 중 오류가 발생했습니다.'
+      return next(error)
+   }
 })
+
 module.exports = router
