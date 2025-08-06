@@ -3,7 +3,7 @@ const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
 const { Op } = require('sequelize')
-const { Item, ItemImage } = require('../models')
+const { Item, ItemImage, Category } = require('../models')
 const { isAdmin, verifyToken } = require('./middlewares')
 const router = express.Router()
 // uploads 폴더가 없을 경우 새로 생성
@@ -68,27 +68,42 @@ router.post('/', verifyToken, isAdmin, upload.array('img'), async (req, res, nex
    }
 })
 /**
- * 2. 전체 상품 불러오기 (검색)
+ * 2. 전체 상품 불러오기
  */
 router.get('/', verifyToken, async (req, res, next) => {
    try {
       const searchTerm = req.query.searchTerm || ''
-      const searchCategory = req.query.searchCategory || 'itemNm'
       const sellCategory = req.query.sellCategory
-
+      const categoryId = req.query.categoryId
       const whereClause = {
          ...(searchTerm && {
-            [searchCategory]: { [Op.like]: `%${searchTerm}%` },
+            itemNm: { [Op.like]: `%${searchTerm}%` },
          }),
          ...(sellCategory && { itemSellStatus: sellCategory }),
+      }
+
+      const includeModels = [
+         {
+            model: ItemImage,
+            attributes: ['id', 'oriImgName', 'imgUrl', 'repImgYn'],
+         },
+      ]
+
+      if (categoryId) {
+         includeModels.push({
+            model: Category,
+            attributes: ['id', 'categoryName'],
+            where: { id: categoryId },
+            through: { attributes: [] },
+         })
       }
 
       const items = await Item.findAll({
          where: whereClause,
          order: [['createdAt', 'DESC']],
-         include: [{ model: ItemImage, attributes: ['id', 'oriImgName', 'imgUrl', 'repImgYn'] }],
+         include: includeModels,
       })
-
+      console.log('상품 데이터 확인', items)
       res.json({
          success: true,
          message: '상품 목록 조회 성공',
@@ -108,7 +123,7 @@ router.get('/:id', verifyToken, async (req, res, next) => {
    try {
       const item = await Item.findOne({
          where: { id: req.params.id },
-         include: [{ model: Img, attributes: ['id', 'oriImgName', 'imgUrl', 'repImgYn'] }],
+         include: [{ model: ItemImage, attributes: ['id', 'oriImgName', 'imgUrl', 'repImgYn'] }],
       })
       if (!item) {
          const error = new Error('해당 상품을 찾을 수 없습니다.')
