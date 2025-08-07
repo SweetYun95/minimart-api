@@ -115,4 +115,26 @@ router.get('/check', (req, res) => {
    }
 })
 
+// ✅ 구글 로그인 시작 (구글 로그인 버튼 클릭 시 실행)
+router.get(
+   '/google',
+   passport.authenticate('google', {
+      scope: ['profile', 'email'],
+   })
+)
+
+// ✅ 구글 로그인 콜백 처리
+router.get(
+   '/google/callback',
+   passport.authenticate('google', {
+      failureRedirect: '/login', // 로그인 실패 시 이동할 경로
+      session: true, // 세션 사용 여부
+   }),
+   (req, res) => {
+      // 로그인 성공 시 프론트로 리다이렉트
+      // 실제 프론트 도메인에 맞게 수정할 것
+      res.redirect(`${process.env.CLIENT_URL}/google-success`)
+   }
+)
+
 module.exports = router
