@@ -23,13 +23,29 @@ router.post('/join', isNotLoggedIn, async (req, res) => {
          password: hash,
          name,
          address,
-         gender, // 선택 사항이지만 받도록
+         gender,
       })
 
       res.status(201).json({ message: '회원가입 성공' })
    } catch (error) {
       console.error('회원가입 중 에러:', error)
       res.status(500).json({ message: '서버 오류', error })
+   }
+})
+
+// 아이디 중복 확인
+router.post('/check-username', async (req, res) => {
+   const { userId } = req.body
+
+   try {
+      const existingUser = await User.findOne({ where: { userId } })
+      if (existingUser) {
+         return res.status(409).json({ message: '이미 사용 중인 아이디입니다.' })
+      }
+      return res.status(200).json({ message: '사용 가능한 아이디입니다.' })
+   } catch (error) {
+      console.error('아이디 중복 확인 중 에러:', error)
+      return res.status(500).json({ message: '서버 오류' })
    }
 })
 
