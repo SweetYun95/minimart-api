@@ -12,6 +12,10 @@ module.exports = class Item extends Sequelize.Model {
                type: Sequelize.INTEGER,
                allowNull: false,
             },
+            itemSummary: {
+               type: Sequelize.STRING(1500),
+               allowNull: true,
+            },
             itemDetail: {
                type: Sequelize.TEXT,
                allowNull: true,
