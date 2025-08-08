@@ -1,5 +1,5 @@
 const express = require('express')
-const { sequelize, Review, ReviewImage } = require('../models')
+const { sequelize, Review, Item, ItemImage, ReviewImage } = require('../models')
 const { isLoggedIn } = require('./middlewares')
 const fs = require('fs')
 const path = require('path')
@@ -98,6 +98,39 @@ router.put('/:id', isLoggedIn, upload.array('img'), async (req, res, next) => {
    }
 })
 //리뷰 삭제하기
-//전체 리뷰 목록 불러오기
-
+//회원이 작성한 리뷰 목록 불러오기
+router.get('/user/:userId', async (req, res, next) => {
+   try {
+      const { userId } = req.params
+      const review = await Review.findAll({
+         where: { userId },
+         include: [
+            {
+               model: Item,
+               attributes: ['id', 'itemNm'],
+               include: {
+                  model: ItemImage,
+                  attributes: ['id', 'oriImgName', 'imgUrl', 'repImgYn'],
+               },
+            },
+            {
+               model: ReviewImage,
+               attributes: ['id', 'oriImgName', 'imgUrl'],
+            },
+         ],
+         order: [['createdAt', 'DESC']],
+      })
+      res.status(200).json({
+         success: true,
+         message: '회원이 작성한 리뷰를 성공적으로 불러왔습니다.',
+         review,
+      })
+      // console.log('🎆결과확인해봅시다!!', res.status)
+   } catch (error) {
+      // console.error('에러:', error)
+      error.status = 500
+      error.message = '데이터를 불러오는 중 오류가 발생했습니다.'
+      next(error)
+   }
+})
 module.exports = router
