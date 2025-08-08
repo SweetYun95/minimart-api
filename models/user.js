@@ -15,11 +15,11 @@ module.exports = class User extends Sequelize.Model {
             },
             password: {
                type: Sequelize.STRING(255),
-               allowNull: false,
+               allowNull: true,
             },
             address: {
                type: Sequelize.STRING(255),
-               allowNull: false,
+               allowNull: true,
             },
             gender: {
                type: Sequelize.CHAR(1),
@@ -35,7 +35,7 @@ module.exports = class User extends Sequelize.Model {
             },
             email: {
                type: Sequelize.STRING(100),
-               allowNull: true,
+               allowNull: false, // 이메일은 선택 사항
                unique: true, // 이메일 중복 방지 (선택 사항)
                validate: {
                   isEmail: true, // Sequelize 내장 이메일 정규식 검증
