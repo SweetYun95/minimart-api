@@ -13,7 +13,7 @@ router.get('/:id', isLoggedIn, async (req, res) => {
             model: CartItem,
             include: {
                model: Item, // 상품 정보까지 포함
-               attributes: ['id', 'itemNm', 'price'],
+               attributes: ['id', 'itemNm', 'price',],
                include: [
                   {
                      model: ItemImage,
@@ -89,6 +89,9 @@ router.delete('/delete/:cartItemId', isLoggedIn, async (req, res) => {
          where: { id: cartItemId },
          include: {
             model: Cart,
+            include: {
+               model:Item
+            },
             where: { userId: req.user.id },
          },
       })
