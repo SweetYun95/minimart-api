@@ -1,10 +1,11 @@
 const express = require('express')
 const router = express.Router()
-const { Cart, CartItem, Item } = require('../models')
-const { isLoggedIn } = require('../middlewares')
+const { Cart, CartItem, Item, ItemImage } = require('../models')
+const { isLoggedIn } = require('./middlewares')
 
 //  장바구니 조회
-router.get('/', isLoggedIn, async (req, res) => {
+
+router.get('/:id', isLoggedIn, async (req, res) => {
    try {
       const cart = await Cart.findOne({
          where: { userId: req.user.id },
@@ -12,10 +13,16 @@ router.get('/', isLoggedIn, async (req, res) => {
             model: CartItem,
             include: {
                model: Item, // 상품 정보까지 포함
+               attributes: ['id', 'itemNm', 'price'],
+               include: [
+                  {
+                     model: ItemImage,
+                     attributes: ['id', 'oriImgName', 'imgUrl', 'repImgYn'],
+                  },
+               ],
             },
          },
       })
-
       if (!cart) return res.json([])
 
       res.json(cart.CartItems)

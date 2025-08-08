@@ -36,6 +36,5 @@ module.exports = class ItemImage extends Sequelize.Model {
          targetKey: 'id',
          onDelete: 'CASCADE',
       })
-  
    }
 }

@@ -70,7 +70,7 @@ router.post('/', verifyToken, isAdmin, upload.array('img'), async (req, res, nex
 /**
  * 2. 전체 상품 불러오기
  */
-router.get('/', verifyToken, async (req, res, next) => {
+router.get('/', async (req, res, next) => {
    try {
       const searchTerm = req.query.searchTerm || ''
       const sellCategory = req.query.sellCategory
@@ -85,6 +85,7 @@ router.get('/', verifyToken, async (req, res, next) => {
       const includeModels = [
          {
             model: ItemImage,
+
             attributes: ['id', 'oriImgName', 'imgUrl', 'repImgYn'],
          },
       ]
@@ -111,6 +112,7 @@ router.get('/', verifyToken, async (req, res, next) => {
       })
    } catch (error) {
       error.status = 500
+      console.error('[GET /item] error:', error)
       error.message = '상품 목록 불러오기 실패'
       next(error)
    }
