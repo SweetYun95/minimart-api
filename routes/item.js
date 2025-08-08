@@ -3,7 +3,7 @@ const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
 const { Op } = require('sequelize')
-const { Item, ItemImage, Category, ItemCategory } = require('../models')
+const { Item, ItemImage, Category, ItemCategory, Review, ReviewImage, User } = require('../models')
 const { isAdmin, verifyToken } = require('./middlewares')
 const router = express.Router()
 // uploads 폴더가 없을 경우 새로 생성
@@ -146,6 +146,20 @@ router.get('/:id', verifyToken, async (req, res, next) => {
             {
                model: Category,
                attributes: ['id', 'categoryName'],
+            },
+            {
+               model: Review,
+               attributes: ['id', 'reviewDate', 'reviewContent'],
+               include: [
+                  {
+                     model: ReviewImage,
+                     attributes: ['id', 'oriImgName', 'imgUrl'],
+                  },
+                  {
+                     model: User,
+                     attributes: ['id', 'userId', 'name'],
+                  },
+               ],
             },
          ],
       })
