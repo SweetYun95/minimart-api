@@ -3,7 +3,7 @@ const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
 const { Op } = require('sequelize')
-const { Item, ItemImage, Category } = require('../models')
+const { Item, ItemImage, Category, ItemCategory } = require('../models')
 const { isAdmin, verifyToken } = require('./middlewares')
 const router = express.Router()
 // uploads 폴더가 없을 경우 새로 생성
@@ -39,6 +39,16 @@ router.post('/', verifyToken, isAdmin, upload.array('img'), async (req, res, nex
          return next(error)
       }
       const { itemNm, price, stockNumber, itemDetail, itemSellStatus } = req.body
+
+      let categories = []
+      try {
+         categories = JSON.parse(req.body.categories)
+      } catch (err) {
+         const error = new Error('카테고리 파싱에 실패했습니다.')
+         error.status = 400
+         return next(error)
+      }
+
       const item = await Item.create({
          itemNm,
          price,
@@ -55,11 +65,25 @@ router.post('/', verifyToken, isAdmin, upload.array('img'), async (req, res, nex
       }))
       if (images.length > 0) images[0].repImgYn = 'Y'
       await ItemImage.bulkCreate(images)
+
+      // 카테고리 저장 및 연결
+      const categoryInstances = await Promise.all(
+         categories.map(async (data) => {
+            const [category] = await Category.findOrCreate({ where: { categoryName: data.trim() } })
+            return category
+         })
+      )
+      const itemCategories = categoryInstances.map((category) => ({
+         itemId: item.id,
+         categoryId: category.id,
+      }))
+      await ItemCategory.bulkCreate(itemCategories)
       res.status(201).json({
          success: true,
          message: '상품이 성공적으로 등록되었습니다.',
          item,
          images,
+         categories: categoryInstances.map((c) => c.categoryName),
       })
    } catch (error) {
       error.status = 500
@@ -74,12 +98,11 @@ router.get('/', verifyToken, async (req, res, next) => {
    try {
       const searchTerm = req.query.searchTerm || ''
       const sellCategory = req.query.sellCategory
-      const categoryId = req.query.categoryId
+
       const whereClause = {
          ...(searchTerm && {
             itemNm: { [Op.like]: `%${searchTerm}%` },
          }),
-         ...(sellCategory && { itemSellStatus: sellCategory }),
       }
 
       const includeModels = [
@@ -87,16 +110,11 @@ router.get('/', verifyToken, async (req, res, next) => {
             model: ItemImage,
             attributes: ['id', 'oriImgName', 'imgUrl', 'repImgYn'],
          },
-      ]
-
-      if (categoryId) {
-         includeModels.push({
+         {
             model: Category,
             attributes: ['id', 'categoryName'],
-            where: { id: categoryId },
-            through: { attributes: [] },
-         })
-      }
+         },
+      ]
 
       const items = await Item.findAll({
          where: whereClause,
@@ -123,13 +141,20 @@ router.get('/:id', verifyToken, async (req, res, next) => {
    try {
       const item = await Item.findOne({
          where: { id: req.params.id },
-         include: [{ model: ItemImage, attributes: ['id', 'oriImgName', 'imgUrl', 'repImgYn'] }],
+         include: [
+            { model: ItemImage, attributes: ['id', 'oriImgName', 'imgUrl', 'repImgYn'] },
+            {
+               model: Category,
+               attributes: ['id', 'categoryName'],
+            },
+         ],
       })
       if (!item) {
          const error = new Error('해당 상품을 찾을 수 없습니다.')
          error.status = 404
          return next(error)
       }
+
       res.json({ success: true, message: '상품 조회 성공', item })
    } catch (error) {
       error.status = 500
@@ -142,7 +167,16 @@ router.get('/:id', verifyToken, async (req, res, next) => {
  */
 router.put('/:id', verifyToken, isAdmin, upload.array('img'), async (req, res, next) => {
    try {
-      const { itemNm, price, stockNumber, itemDetail, itemSellStatus } = req.body
+      const { itemNm, price, stockNumber, itemDetail, itemSellStatus, categories } = req.body
+      let parsedCategories = []
+      try {
+         parsedCategories = JSON.parse(categories) // 문자열 → 배열
+      } catch (err) {
+         const error = new Error('카테고리 파싱에 실패했습니다.')
+         error.status = 400
+         return next(error)
+      }
+
       const item = await Item.findByPk(req.params.id)
       if (!item) {
          const error = new Error('해당 상품을 찾을 수 없습니다.')
@@ -161,6 +195,21 @@ router.put('/:id', verifyToken, isAdmin, upload.array('img'), async (req, res, n
          if (images.length > 0) images[0].repImgYn = 'Y'
          await ItemImage.bulkCreate(images)
       }
+      await ItemCategory.destroy({ where: { itemId: item.id } })
+      const categoryInstances = await Promise.all(
+         parsedCategories.map(async (data) => {
+            const [category] = await Category.findOrCreate({
+               where: { categoryName: data.trim() },
+            })
+            return category
+         })
+      )
+
+      const itemCategories = categoryInstances.map((category) => ({
+         itemId: item.id,
+         categoryId: category.id,
+      }))
+      await ItemCategory.bulkCreate(itemCategories)
       res.json({ success: true, message: '상품이 성공적으로 수정되었습니다.' })
    } catch (error) {
       error.status = 500
