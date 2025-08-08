@@ -1,5 +1,5 @@
 const express = require('express')
-const { sequelize, Review, ReviewImage } = require('../models')
+const { sequelize, Review, Item, ItemImage, ReviewImage } = require('../models')
 const { isLoggedIn } = require('./middlewares')
 const fs = require('fs')
 const path = require('path')
@@ -127,6 +127,7 @@ router.get('/user/:userId', async (req, res, next) => {
       })
       // console.log('🎆결과확인해봅시다!!', res.status)
    } catch (error) {
+      // console.error('에러:', error)
       error.status = 500
       error.message = '데이터를 불러오는 중 오류가 발생했습니다.'
       next(error)
